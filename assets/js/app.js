@@ -1,5 +1,5 @@
 $(function(){
-	var current_menu_item = localStorage.getItem( 'app-box-chat-menu' )
+	var current_menu_item = localStorage.getItem( 'app-box-chat-menu' );
 	if( current_menu_item ){
 		$('#' + current_menu_item).css({'z-index':'9999'});
 		$('a[href=#' + current_menu_item+']').parent('li').addClass('current');
@@ -13,6 +13,7 @@ $(function(){
 		$(this).parent('li').addClass('current');
 		localStorage.setItem("app-box-chat-menu", id);
 	});
+	var current_room = localStorage.getItem( 'app-box-room-id' );
 
 /*
 *
@@ -31,6 +32,8 @@ $(function(){
 
 	// Connected
 	socket.on('connected', function (data) {
+
+
 		if( $('#messages').length > 0 ){
 			for( var i=0; i<data.length;i++ ){
 				rbk_message( data[i].name, data[i].message );
@@ -45,9 +48,9 @@ $(function(){
 	// Send Message
 	$('#send-message').click(function(){
 		var message = $('#message').val();
-		var nickname = $('#client_nickname').val();
+		var username = $('#client_nickname').val();
 		if( message.length > 0 ){
-			socket.emit('chat message', {nickname: nickname, message: message });
+			socket.emit('chat message', {username: username, message: message });
 			$('#message').val('');
 		}
 		return false;
@@ -56,7 +59,7 @@ $(function(){
 
 	// Receive Message
 	socket.on('chat message', function(data){
-		rbk_message( data.nickname, data.message );
+		rbk_message( data.username, data.message );
 		$('#message-board').scrollTop( $('#messages').height() + 100 )
 	});
 
@@ -82,7 +85,7 @@ $(function(){
 		if( user.newuser ){
 			$('#chatModal').modal();
 		} else {
-			$('#user-list').append( '<li class="'+user.socket_id+'">'+user.nickname+'</li>' );
+			$('#user-list').append( '<li class="'+user.socket_id+'">'+user.username+'</li>' );
 		}
 	});
 
@@ -144,22 +147,18 @@ $(function(){
 		// console.log( your_nickname )
 	}
 
-// GOOD
 	socket.on('update user list',function(users){
 		console.log( users )
 		$('#user-list li').remove();
 		for( var i=0;i<users.length;i++ ){
-			$('#user-list').append('<li>'+users[i].nickname+'</li>');
+			$('#user-list').append('<li>'+users[i].username+'</li>');
 		}
 		$('#message-board').scrollTop( $('#messages').height() + 100 );
 	});
 	socket.on('user joined',function(name){
-		// rbk_message( '<i>Server', name + ' joined.</i>' );
 		$('#messages').append('<li class="system">'+name+'&nbsp;joined.</li>')
 	});
 	socket.on('user left',function(name){
-		// console.log( name );
-		// rbk_message( '<i>Server', name + ' joined.</i>' );
 		$('#messages').append('<li class="system">'+name+'&nbsp;left.</li>')
 	});
 

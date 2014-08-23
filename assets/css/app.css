@@ -56,12 +56,10 @@ button, input[type=submit] {
   padding: 0;
   border: 0;
   background: transparent;
-  outline: 0;
-  padding: 1px; }
+  outline: 0; }
 
 input[type=text], textarea {
-  width: 100%;
-  background-color: #eee; }
+  width: 100%; }
 
 /**
  * For modern browsers
@@ -118,7 +116,6 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #222; }
 
 #chat, #users, #rooms, #settings {
-  border: 3px solid #222;
   position: absolute;
   height: 100%;
   width: 100%;
@@ -129,7 +126,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   bottom: 0;
   color: #ddd;
-  background-color: #000; }
+  background-color: #111; }
 
 #chat {
   padding: 0; }
@@ -141,8 +138,7 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 0;
     background-color: #272727;
     padding: 6px 18px;
-    color: #eee;
-    font-size: 20px; }
+    color: #eee; }
   #chat #send-message {
     position: absolute;
     bottom: 0;
@@ -158,8 +154,10 @@ h1, h2, h3, h4, h5, h6 {
       display: none; }
   #chat li {
     display: block;
-    padding: 1px 18px;
-    font-size: 20px; }
+    margin-bottom: 1px; }
+    #chat li strong {
+      background-color: #777;
+      padding: 0 12px; }
     #chat li.system {
       background-color: #0F0F0F;
       padding: 8px 16px;
@@ -217,3 +215,13 @@ input.inline {
   padding: 3px;
   background-color: #222;
   color: #eee; }
+
+input#name {
+  border: 1px solid #111; }
+  input#name:active, input#name:focus {
+    border: 1px solid #525252; }
+  input#name:before {
+    content: "this";
+    position: relative;
+    top: -10px;
+    background-color: #fff; }

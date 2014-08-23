@@ -16,12 +16,6 @@ h1,h2,h3,h4,h5,h6{
 	}
 }
 
-
-
-
-
-
-
 #chat {
 	background-color:rgba(255,0,0,1);
 }
@@ -31,18 +25,14 @@ h1,h2,h3,h4,h5,h6{
 #rooms {
 	background-color: rgb(205, 231, 255);
 }
-#app-box {
-	// position: relative;
-}
+
 #header {
 	z-index: 999999;
 	position: relative;
 	background-color: #222;
 }
 #chat, #users, #rooms, #settings {
-border: 3px solid #222;
 position:absolute;
-// z-index:999999999999999999;
 height:100%;
 width:100%;
 margin:0;
@@ -52,7 +42,7 @@ right:0;
 left:0;
 bottom:0;
 color:#ddd;
-background-color: #000;
+background-color: #111;
 
 }
 
@@ -69,7 +59,7 @@ background-color: #000;
 		background-color: #272727;
 		padding: 6px 18px;
 		color: #eee;
-		font-size: 20px;
+		// font-size: 20px;
 	}
 	#send-message {
 		position: absolute;
@@ -90,8 +80,14 @@ background-color: #000;
 	}
 	li {
 		display: block;
-		padding: 1px 18px;
-		font-size: 20px;
+		margin-bottom: 1px;
+		// font-size: 20px;
+
+		strong {
+			background-color: #777;
+			// line-height: 22px;
+			padding: 0 12px;
+		}
 
 		&.system {
 			background-color: #0F0F0F;
@@ -170,6 +166,10 @@ transform: translateX(10px) skewX(-20deg);
 
 
 #settings {
+	input,
+	label {
+		// font-size: 20px;
+	}
 	label {
 		width: 90px;
 		display: inline-block;
@@ -181,4 +181,19 @@ input.inline {
   padding: 3px;
   background-color: #222;
   color: #eee;
+}
+
+input#name {
+	border: 1px solid #111;
+	&:active, &:focus {
+		border: 1px solid #525252;
+	}
+	&:before {
+		content: "this";
+		position: relative;
+		top: -10px;
+		background-color: #fff;
+		[placeholder] {
+		}	
+	}
 }

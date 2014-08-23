@@ -22,6 +22,7 @@ var sanitizer    = require('sanitizer');
 var bodyParser   = require('body-parser');
 var md5          = require('MD5');
 var fs           = require('fs');
+// npm install helmet // security
 
 console.log('TODO: User notifications');
 console.log('TODO: Embeddable');
@@ -30,8 +31,8 @@ console.log('TODO: Private messaging');
 console.log('TODO: Resposive');
 console.log('TODO: Basic auth');
 
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
+// app.use( bodyParser.json() );       // to support JSON-encoded bodies
+// app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
 
 
 // Session stuff
@@ -44,6 +45,7 @@ app.use(express.static('assets'));
 
 // Set the template engine
 app.engine('.html', require('ejs').__express);
+app.engine('.js', require('ejs').__express);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
@@ -96,20 +98,17 @@ app.get('/session',function(req, res, next) {
 })
 
 // DEFINE Collections/Models
-var Chat = mongoose.model( 'Message', {
+var Message = mongoose.model( 'Message', {
     name: String,
     message: String,
-    time: Date
-});
-var ChatUser = mongoose.model( 'ChatUser', {
-    nickname: String,
-    socket_id: String,
-    session_id: String,
-    message_count: Number
+    date: { type: Date, default: Date.now }
 });
 var User = mongoose.model( 'User', {
     username: String,
-    hashed_password: String
+    hashed_password: String,
+    socket_id: String,
+    session_id: String,
+    message_count: Number
 });
 var Session = mongoose.model( 'Session', {
     type: String,
@@ -125,6 +124,11 @@ var Key = mongoose.model( 'Key', {
 // Static routes
 app.get('/',            function(req, res){ res.render('chat'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
+app.get('/embed',        function(req, res){ res.render('embed', { title: 'Chat' }); });
+
+app.get('/chat/:id', function(req,res){
+    res.render('chat', { id : req.params.id });
+});
 
 // app.get('/chat/:id',function(req, res){
 //     console.log( req.params.id )
@@ -212,13 +216,11 @@ app.get('/api/:id?', function(req, res, next) {
 // Connection made to socket
 io.on('connection', function(socket){
 
-    // socket.join('channel1');
 
     socket.emit('your socket id', socket.id);
 
-    // Get ALL messages
     // Send all messages to client as object
-    Chat.find({ },function (err, messages) {
+    Message.find({}).sort('date').limit(10).exec(function (err, messages) {
         if (err) return console.error(err);
         socket.emit('connected', messages);
     });
@@ -227,28 +229,27 @@ io.on('connection', function(socket){
     // Someone sends a message
     socket.on('chat message', function(data){
         var sanitized_message = sanitizer.escape(data.message);
-        var message = new Chat({ name: data.nickname, message: sanitized_message });
+        var message = new Message({ name: data.username, message: sanitized_message });
         // Save Message to MongoDB
         message.save(function (err) {
             // Handle errors ***
             if( err ){
                 io.emit('chat message', 'Something went wrong while saving your message');
             } else {
-                // console.log( 'Message saved to MongoDB: ' + msg );
                 // Send message to all sockets including yours!
-                io.emit('chat message', { nickname: data.nickname, message: sanitized_message });
+                io.emit('chat message', { nickname: data.username, message: sanitized_message });
             }
         });
     });
 
-    socket.on('set username', function(nickname){
-        var user = ChatUser.find({nickname: nickname });
+    socket.on('set username', function(username){
+        var user = User.find({username: username });
         if( !user ){
-            var user = new ChatUser({nickname: sanitizer.escape(nickname), socket_id: socket.id});
+            var user = new User({username: sanitizer.escape(username), socket_id: socket.id});
             user.save(function(err){
                 if( !err ){
                     rbk_update_users_list();
-                    io.emit('user joined', nickname);
+                    io.emit('user joined', username);
                 }
             });
         } else {
@@ -256,11 +257,10 @@ io.on('connection', function(socket){
         }
     });
     socket.on('disconnect', function( res ){
-        var user = ChatUser.find({socket_id:socket.id}, function(err,user){
-            // console.log( user )
+        var user = User.find({socket_id:socket.id}, function(err,user){
             if( !err && user[0] ){
-                io.emit('user left', user[0].nickname);
-                ChatUser.remove({socket_id: socket.id}, function(err){
+                io.emit('user left', user[0].username);
+                User.remove({socket_id: socket.id}, function(err){
                     rbk_update_users_list();
                 });
             } else {
@@ -270,24 +270,12 @@ io.on('connection', function(socket){
     });
 
     function rbk_update_users_list(  ){
-        ChatUser.find({ },function (err, users) {
+        User.find({},function (err, users) {
             if( !err ){
                 io.emit( 'update user list', users);
             }
         });
     }
-    // Broadcast your mouse position!
-    socket.on('mouse_position', function(pos){
-        pos.id = socket.id;
-        io.emit('show_mouse', pos);
-    });
-    // Remove your mouse icon when you disconnect
-    socket.on('disconnect', function( res ){
-        socket.broadcast.emit('remove_cursor', socket.id );
-        // socket.emit('remove user', socket.id );
-    });
-
-
 }); // end io connect
 
 
