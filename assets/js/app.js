@@ -23,7 +23,9 @@ $(function(){
 	var socket = io();
 	var nickname = 'richard';
 	var message_tempate = $('#message-li').html();
+	
 	var cookie = $.cookie('rbk_chat');
+	// socket.emit( 'set username', cookie);
 
 	socket.on('your socket id', function(id){
 		// console.log( 'Your socket id:' + id );
@@ -32,14 +34,9 @@ $(function(){
 
 	// Connected
 	socket.on('connected', function (data) {
-
-
 		if( $('#messages').length > 0 ){
 			for( var i=0; i<data.length;i++ ){
 				rbk_message( data[i].name, data[i].message );
-				// $('#messages').append( 
-				// 	message_tempate.replace('{{name}}', data[i].nickname ).replace('{{message}}', data[i].message) 
-				// );
 			}
 		}
 	});

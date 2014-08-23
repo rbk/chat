@@ -237,7 +237,7 @@ io.on('connection', function(socket){
                 io.emit('chat message', 'Something went wrong while saving your message');
             } else {
                 // Send message to all sockets including yours!
-                io.emit('chat message', { nickname: data.username, message: sanitized_message });
+                io.emit('chat message', { username: data.username, message: sanitized_message });
             }
         });
     });
