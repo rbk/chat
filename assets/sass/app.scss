@@ -1,0 +1,40 @@
+@import "reset";
+
+#message-board {
+	height: 200px;
+	overflow-y: scroll;
+	// box-shadow: inset 0px 0px 6px #E2E2E2;
+	// -moz-box-shadow: inset 0px 0px 6px #E2E2E2;
+	// -webkit-box-shadow: inset 0px 0px 6px #E2E2E2;
+	border: 1px solid #ddd;
+	background-color: #eee;
+}
+#user-list {
+	height: 100px;
+	overflow-y: scroll;
+	border: 1px solid #ddd;
+	background-color: #eee;
+}
+#message-board {
+
+}
+
+#chat_main {
+	padding-bottom:15em;
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}	
+}
+
+
+#chat {
+	background-color:rgba(255,0,0,.1);
+}
+#users {
+	background-color:rgba(0,255,0,.1);
+}
+#rooms {
+	background-color:rgba(0,0,255,.1);
+}

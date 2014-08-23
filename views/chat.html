@@ -1,0 +1,56 @@
+<% include _header.html %>
+
+<div class="app-box">
+    <h1>Current Room</h1>
+    <nav>
+        <a href="#chat">Chat</a>
+        <a href="#users">Users</a>
+        <a href="#rooms">Rooms</a>
+    </nav>
+    <div id="chat">
+        <div class="message">message1</div>
+        <div class="message">message2</div>
+        <div class="message">message3</div>
+    </div>
+    <div id="users">        
+        <ul>
+            <li>richard</li>
+            <li>mason</li>
+            <li>terrillo</li>
+            <li>micah</li>
+            <li>kari</li>
+            <li>stu</li>
+        </ul>
+    </div>
+    <div id="rooms">
+        <ul>
+            <li>Main</li>
+            <li>Lolcats</li>
+            <li>Private room</li>
+            <li>Dev only</li>
+            <li>Art only</li>
+        </ul>
+    </div>   
+</div>
+
+
+
+<div id="chat_main">
+    <div id="message-board">
+        <ul id="messages"></ul>
+    </div>
+    <ul id="user-list"></ul>
+    <form>
+        <input type="text" id="message" autocomplete="off" placeholder="Type here..." />
+        <button id="send-message">Send</button>
+    </form>
+
+    <input type="hidden" id="client_nickname">
+    
+    <script id="message-li" type="template">
+        <li><strong>{{name}}</strong>:&nbsp;{{message}}</li>
+    </script>
+
+</div>
+
+<% include _footer.html %>
