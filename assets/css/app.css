@@ -139,14 +139,10 @@ h1, h2, h3, h4, h5, h6 {
   #chat #message {
     position: absolute;
     bottom: 0;
-    background-color: #eee;
-    padding: 6px;
     background-color: #272727;
     padding: 6px 18px;
-    color: #707070;
     color: #eee;
-    font-size: 14px;
-    font-size: 32px; }
+    font-size: 20px; }
   #chat #send-message {
     position: absolute;
     bottom: 0;
@@ -163,7 +159,7 @@ h1, h2, h3, h4, h5, h6 {
   #chat li {
     display: block;
     padding: 1px 18px;
-    font-size: 22px; }
+    font-size: 20px; }
     #chat li.system {
       background-color: #0F0F0F;
       padding: 8px 16px;

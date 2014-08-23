@@ -1,5 +1,9 @@
 $(function(){
-
+	var current_menu_item = localStorage.getItem( 'app-box-chat-menu' )
+	if( current_menu_item ){
+		$('#' + current_menu_item).css({'z-index':'9999'});
+		$('a[href=#' + current_menu_item+']').parent('li').addClass('current');
+	}
 	// chat nav
 	$('#app-box #header nav a').click(function(){
 		var id = $(this).attr('href').replace('#', '');
@@ -7,6 +11,7 @@ $(function(){
 		$('#app-box #header li').removeClass('current');
 		$('#' + id).css({'z-index':'999'});
 		$(this).parent('li').addClass('current');
+		localStorage.setItem("app-box-chat-menu", id);
 	});
 
 /*
