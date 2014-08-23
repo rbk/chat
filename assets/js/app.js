@@ -1,4 +1,14 @@
 $(function(){
+
+	// chat nav
+	$('#app-box #header nav a').click(function(){
+		var id = $(this).attr('href').replace('#', '');
+		$('.page').css({'z-index':'1'});
+		$('#app-box #header li').removeClass('current');
+		$('#' + id).css({'z-index':'999'});
+		$(this).parent('li').addClass('current');
+	});
+
 /*
 *
 *	Chat room logic
@@ -140,52 +150,16 @@ $(function(){
 	});
 	socket.on('user joined',function(name){
 		// rbk_message( '<i>Server', name + ' joined.</i>' );
-		$('#messages').append('<li style="background-color: #F3F3F3;padding: 0px 5px;color: #707070;">'+name+'&nbsp;joined.</li>')
+		$('#messages').append('<li class="system">'+name+'&nbsp;joined.</li>')
 	});
 	socket.on('user left',function(name){
 		// console.log( name );
 		// rbk_message( '<i>Server', name + ' joined.</i>' );
-		$('#messages').append('<li style="background-color: #FFDADA;padding: 0px 5px;color: #707070;">'+name+'&nbsp;left.</li>')
+		$('#messages').append('<li class="system">'+name+'&nbsp;left.</li>')
 	});
-/*
-*
-*
-*
-*	weird cursor thing
-*
-*
-**/
-	// Send your mouse position to all other sockets
-	// window.onmousemove = handleMouseMove;
-	// function handleMouseMove(event) {
-	// 	event = event || window.event; // IE-ism
-	// 	// console.log( event.clientX + ' ' + event.clientY );
-	// 	socket.emit('mouse_position', { x: event.clientX, y: event.clientY } );
-	// }
-	// // Remove your cursor when you disconnect
-	// socket.on( 'remove_cursor', function(id){
-	// 	if( $('#' + id).length > 0 ){
-	// 		$('#' + id).remove();
-	// 	}
-	// });
-	// // Create your cursor for all other people and set position
-	// socket.on( 'show_mouse', function(pos){
-	// 	if( $('#' + pos.id).length == 0 ){
-	// 		var cursor = document.createElement('i');
-	// 		cursor.classList.add('fa');
-	// 		cursor.classList.add('fa-bomb');
-	// 		cursor.classList.add('cursor');
-	// 		cursor.setAttribute("id", pos.id);
-	// 		document.body.appendChild(cursor);
-	// 	}
-	// 	$('i#' + pos.id).css({
-	// 		top : pos.y + Math.random() * 1000,
-	// 		left : pos.x + Math.random() * 1000
-	// 	});
-	// });
-
-
-
-
 
 });
+
+
+
+

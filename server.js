@@ -126,14 +126,14 @@ var Key = mongoose.model( 'Key', {
 app.get('/',            function(req, res){ res.render('chat'); });
 app.get('/chat',        function(req, res){ res.render('chat', { title: 'Chat' }); });
 
-app.get('/chat/:id',function(req, res){
-    console.log( req.params.id )
-    the_db = req.params.id;
-    mongoose.disconnect();
-    mongoose.connect('mongodb://localhost/' + the_db);
-    var db = mongoose.connection;
-    res.render('chat'); 
-});
+// app.get('/chat/:id',function(req, res){
+//     console.log( req.params.id )
+//     the_db = req.params.id;
+//     mongoose.disconnect();
+//     mongoose.connect('mongodb://localhost/' + the_db);
+//     var db = mongoose.connection;
+//     res.render('chat'); 
+// });
 
 app.get('/test/:id?', function(req,res){
     res.render('chat', { title:'blah', channel: 'channel1' });
@@ -242,13 +242,18 @@ io.on('connection', function(socket){
     });
 
     socket.on('set username', function(nickname){
-        var user = new ChatUser({nickname: sanitizer.escape(nickname), socket_id: socket.id});
-        user.save(function(err){
-            if( !err ){
-                rbk_update_users_list();
-                io.emit('user joined', nickname);
-            }
-        });
+        var user = ChatUser.find({nickname: nickname });
+        if( !user ){
+            var user = new ChatUser({nickname: sanitizer.escape(nickname), socket_id: socket.id});
+            user.save(function(err){
+                if( !err ){
+                    rbk_update_users_list();
+                    io.emit('user joined', nickname);
+                }
+            });
+        } else {
+            rbk_update_users_list();
+        }
     });
     socket.on('disconnect', function( res ){
         var user = ChatUser.find({socket_id:socket.id}, function(err,user){

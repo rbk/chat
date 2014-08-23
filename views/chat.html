@@ -1,44 +1,92 @@
 <% include _header.html %>
 
-<div class="app-box">
-    <h1>Current Room</h1>
-    <nav>
-        <a href="#chat">Chat</a>
-        <a href="#users">Users</a>
-        <a href="#rooms">Rooms</a>
-    </nav>
-    <div id="chat">
-        <div class="message">message1</div>
-        <div class="message">message2</div>
-        <div class="message">message3</div>
+<div id="app-box">
+    <div id="header">   
+        <!-- <h1>Current Room</h1> -->
+        <nav>
+            <ul>
+                <li class="current"><a href="#chat">Chat</a></li>
+                <li><a href="#users">Users</a></li>
+                <li><a href="#rooms">Rooms</a></li>
+                <li><a style="font-size:24px;padding:10px 15px;" href="#settings"><i class="fa fa-cog"></i></a></li>
+            </ul>
+            
+            <div class="cf"></div>
+        </nav>
     </div>
-    <div id="users">        
-        <ul>
-            <li>richard</li>
-            <li>mason</li>
-            <li>terrillo</li>
-            <li>micah</li>
-            <li>kari</li>
-            <li>stu</li>
-        </ul>
-    </div>
-    <div id="rooms">
+
+    <section id="settings" class="page">
+        <h1>Settings</h1>
+        
+        <div>
+            <label>Nickname:</label>
+            <input type="text" class="inline">
+        </div>
+        <br>
+        <div>
+            <label>Email:</label>
+            <input type="text" class="inline">
+        </div>
+        <br>
+        <div>
+            <label>Theme:</label>
+            <select name="" id="">
+                <option value="">Dark</option>
+                <option value="">Light</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <label>Color:</label>
+            <input type="text" class="inline">
+        </div>
+        <br>
+        <div>
+            <label>Image:</label>
+            <input type="text" class="inline">
+        </div>
+
+    </section>
+
+    <section id="rooms" class="page">
+        <h1>Rooms</h1>
         <ul>
             <li>Main</li>
             <li>Lolcats</li>
-            <li>Private room</li>
             <li>Dev only</li>
             <li>Art only</li>
+            <li>coming soon...</li>
+            <li>coming soon...</li>
+            <li>coming soon...</li>
+            <li>coming soon...</li>
         </ul>
-    </div>   
+    </section>
+
+    <section id="users" class="page"> 
+        <div class="inner">
+            <h1>Users</h1>
+            <div id="user-board">
+                <ul id="user-list"></ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="chat" class="page">
+        <div class="inner">
+            <div id="message-board">
+                <ul id="messages"></ul>
+            </div>
+            <form>
+                <input type="text" id="message" autocomplete="off" placeholder="Type here..." />
+                <button id="send-message" style="display:none;">Send</button>
+            </form>
+        </div>
+    </section>
 </div>
 
 
 
-<div id="chat_main">
-    <div id="message-board">
-        <ul id="messages"></ul>
-    </div>
+<div id="chat_main" style="display:none;">
     <ul id="user-list"></ul>
     <form>
         <input type="text" id="message" autocomplete="off" placeholder="Type here..." />
