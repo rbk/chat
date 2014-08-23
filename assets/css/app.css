@@ -145,7 +145,8 @@ h1, h2, h3, h4, h5, h6 {
     padding: 6px 18px;
     color: #707070;
     color: #eee;
-    font-size: 14px; }
+    font-size: 14px;
+    font-size: 32px; }
   #chat #send-message {
     position: absolute;
     bottom: 0;
@@ -155,13 +156,14 @@ h1, h2, h3, h4, h5, h6 {
   #chat #message-board {
     height: 100%;
     overflow-y: scroll;
-    padding-bottom: 40px;
-    padding-top: 43px; }
+    padding-bottom: 52px;
+    padding-top: 52px; }
     #chat #message-board::-webkit-scrollbar {
       display: none; }
   #chat li {
     display: block;
-    padding: 1px 18px; }
+    padding: 1px 18px;
+    font-size: 22px; }
     #chat li.system {
       background-color: #0F0F0F;
       padding: 8px 16px;

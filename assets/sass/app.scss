@@ -73,6 +73,7 @@ padding: 6px 18px;
 color: #707070;
 color: #eee;
 font-size: 14px;
+font-size: 32px;
 	}
 	#send-message {
 		position: absolute;
@@ -84,8 +85,8 @@ font-size: 14px;
 	#message-board {
 		height: 100%;
 		overflow-y: scroll;
-		padding-bottom: 40px;
-		padding-top: 43px;
+		padding-bottom: 52px;
+		padding-top: 52px;
 		
 		&::-webkit-scrollbar { 
 			display: none; 
@@ -94,6 +95,7 @@ font-size: 14px;
 	li {
 		display: block;
 		padding: 1px 18px;
+		font-size: 22px;
 
 		&.system {
 			background-color: #0F0F0F;
