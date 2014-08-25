@@ -1,8 +1,7 @@
 /*
 *
-*   Title: embeddable chat
+*   Title: Embeddable chat
 *   Author: Richard
-*
 *
 */
 // Base Server
@@ -25,14 +24,10 @@ var fs           = require('fs');
 // npm install helmet // security
 
 console.log('TODO: User notifications');
-console.log('TODO: Embeddable');
 console.log('TODO: Multiple rooms');
 console.log('TODO: Private messaging');
 console.log('TODO: Resposive');
 console.log('TODO: Basic auth');
-
-// app.use( bodyParser.json() );       // to support JSON-encoded bodies
-// app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
 
 
 // Session stuff
@@ -41,7 +36,6 @@ var MongoStore = require('connect-mongo')(session);
 
 // Set static file folder
 app.use(express.static('assets'));
-// app.use(express.static('public'));
 
 // Set the template engine
 app.engine('.html', require('ejs').__express);
@@ -49,13 +43,9 @@ app.engine('.js', require('ejs').__express);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
 
-// app.engine('html', require('ejs').renderFile);
 
 // Cookie Parser
 app.use(cookieParser('secret-string'));
-// app.use(function(req, res, next){
-//    res.end(JSON.stringify(req.cookies));
-// })
 
 // Log HTTP requests
 var logger = require('morgan');
@@ -116,10 +106,7 @@ var Session = mongoose.model( 'Session', {
     ip: String,
     duration: Number
 });
-var Key = mongoose.model( 'Key', {
-    belongs_to: String,
-    key: String
-});
+
 
 // Static routes
 app.get('/',            function(req, res){ res.render('chat'); });
@@ -129,6 +116,7 @@ app.get('/embed',        function(req, res){ res.render('embed', { title: 'Chat'
 app.get('/chat/:id', function(req,res){
     res.render('chat', { id : req.params.id });
 });
+
 
 // app.get('/chat/:id',function(req, res){
 //     console.log( req.params.id )
