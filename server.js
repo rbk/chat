@@ -253,6 +253,13 @@ io.on('connection', function(socket){
                 }
             });
         } else {
+        // console.log(username)
+            User.update({_id: username }, { username: username }, { multi: false }, function( err, doc ){
+                console.log(err )
+                if( !err ){
+
+                }
+            });
             rbk_update_users_list();
         }
     });
