@@ -202,10 +202,11 @@ app.get('/private/api_key/:id?', function( req, res ){
 
 
 // API
-app.get('/api/:id?', function(req, res, next) {
-    console.log( 'you hit our api' );
-    res.send(JSON.stringify( req.params.id ));
-    // next();
+app.get('/api/session/:id', function(req, res) {
+    // Need to send user object as a var to use in client side
+    User.find({ username: 'Richard' }, function(err, user){
+        res.send( user );
+    });
 });
 
 /*
@@ -238,6 +239,7 @@ io.on('connection', function(socket){
             } else {
                 // Send message to all sockets including yours!
                 io.emit('chat message', { username: data.username, message: sanitized_message });
+        console.log('SAVE MESSAGE')
             }
         });
     });
@@ -254,7 +256,7 @@ io.on('connection', function(socket){
             });
         } else {
         // console.log(username)
-            User.update({_id: username }, { username: username }, { multi: false }, function( err, doc ){
+            User.update({ id: username }, { username: username }, { multi: false }, function( err, doc ){
                 console.log(err )
                 if( !err ){
 

@@ -28,16 +28,13 @@ $(function(){
 	$('#client_nickname').val(username);
 	socket.emit( 'set username', username);
 
+	// console.log(  )
 /*
 *
 *	Chat room logic
 *
 **/
-	
-	var nickname = 'richard';
-	
-	var cookie = $.cookie('rbk_chat');
-	// socket.emit( 'set username', cookie);
+
 
 	socket.on('your socket id', function(id){
 		// console.log( 'Your socket id:' + id );
