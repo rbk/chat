@@ -9,7 +9,8 @@ var express      = require('express');
 var app          = express();
 var http         = require('http').Server(app);
 var io           = require('socket.io')(http);
-var port         = process.env.PORT || 3001;
+// var port         = process.env.PORT || 3020;
+var port = 3020;
 
 // Database of choice
 var mongoose     = require('mongoose');
@@ -18,7 +19,6 @@ var mongoose     = require('mongoose');
 var cookieParser = require('cookie-parser');
 var router       = express.Router();
 var sanitizer    = require('sanitizer');
-var bodyParser   = require('body-parser');
 var md5          = require('MD5');
 var fs           = require('fs');
 // npm install helmet // security

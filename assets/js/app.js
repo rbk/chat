@@ -19,7 +19,7 @@ $(function(){
 	});
 	var current_room = localStorage.getItem( 'app-box-room-id' );
 
-	var temp_name = 'Guest' + Math.floor(Math.random()*4000);
+	var temp_name = 'Guest' + Math.floor(Math.random()*10000000);
 	var username = localStorage.getItem('app-box-username');
 	if( !username ){
 		localStorage.setItem('app-box-username', temp_name);
