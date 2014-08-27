@@ -22,6 +22,12 @@ var md5          = require('MD5');
 var fs           = require('fs');
 // npm install helmet // security
 
+// Form and upload processing
+var bodyParser = require('body-parser');
+var multer  = require('multer');
+app.use(bodyParser());
+app.use(multer({ dest: './uploads/'}));
+
 console.log('TODO: User notifications');
 console.log('TODO: Multiple rooms');
 console.log('TODO: Private messaging');
@@ -35,6 +41,7 @@ var MongoStore = require('connect-mongo')(session);
 
 // Set static file folder
 app.use(express.static('assets'));
+
 
 // Set the template engine
 app.engine('.html', require('ejs').__express);
@@ -126,68 +133,68 @@ app.get('/chat/:id', function(req,res){
 //     res.render('chat'); 
 // });
 
-app.get('/test/:id?', function(req,res){
-    res.render('chat', { title:'blah', channel: 'channel1' });
+
+app.get('/user/new', function(req,res){
+    res.render('user_new', {message: ''});
 });
+app.post('/user/new', function(req,res){
 
+    var n = req.body.username;
+    var p = req.body.password;
+    var pc = req.body.password_confirmation;
 
-// app.get('/create-user', function(req,res){
-
-//     var user = new User({ username: 'richard', hashed_password: md5('password') });
-//     user.save(function (err) {
-//         if( !err ){
-//             res.send(user);
-//         } else {
-//             res.send(err);
-//         }
-//     });
-// });
-
-app.get( '/login', function(req,res){
-    // console.log( req.params )
-    if( !req.params ) {
-        res.redirect('chat');
-    } else {
-        res.render( 'login' );
-        res.end();
+    if( !n || !p || !pc ){
+        res.render('user_new', { message: 'Please fill out all fields.' });
     }
-});
 
-
-app.post('/sessions', function(req,res){
-    var username = req.body.username.toLowerCase();
-    var password = md5(req.body.password);
-    
-    // Chat.find({ },function (err, messages) {
-    User.find({ username: username, hashed_password: password },function(err,user){
-        if( !err ){
-            if( user.length > 0 ){
-                console.log('user FOUND')
-                res.send('you have done it');
-            } else {
-                console.log('NO USERS')
-                res.redirect('login?error=1'); 
-                // res.render( 'login',{ message: 'Invalid credentials' });
-            }
+    var user = User.find({username: n}, function(error,user){
+        if( user.length > 0 ){
+            res.render('user_new', { message: 'Username already exists!' });
         } else {
-            console.log( err )
+            if( p != pc ) {
+                res.render('user_new', { message: 'Passwords do not match.' });
+            }
+            var user = new User({ username: n, hashed_password: md5(p) });
+            user.save(function (err) {
+                if( !err ){
+                    res.render('user_new', { message: 'New Users Created!' });
+                } 
+            });
         }
     });
 });
-app.get('/sessions', function(req,res){
-    // res.redirect('/');
-    Session.find({}, function(err,sessions){
-        res.json( sessions );
-    });
+
+
+app.get( '/login', function(req,res){
+    res.render( 'login', { message: '' } );
+    // res.end();
 });
+
+
+// app.get('/sessions', function(req,res){
+//     Session.find({}, function(err,sessions){
+//         res.json( sessions );
+//     });
+// });
 app.post('/session/new', function(req,res){
+
+    var username = req.body.username.toLowerCase();
+    var password = md5(req.body.password);
+
+    User.find({ username: username, hashed_password: password },function(err,user){
+        if( !err && user.length > 0 ){
+            res.redirect( '/');
+        } else {
+            res.redirect( '/login');
+        }
+    });
     // Session.find({}, function(err,sessions){
     //     res.json( sessions );
     // });
-    var logged_in = true;
-    if( logged_in ){
-        res.redirect('/admin');
-    }
+    // var logged_in = true;
+    // if( logged_in ){
+    //     res.redirect('/admin');
+    // }
     // next();
 });
 app.get('/admin', function(req,res){
@@ -197,6 +204,7 @@ app.get('/admin', function(req,res){
     }
 
 });
+
 // JSON.stringify( req.params )
 app.get('/private/api_key/:id?', function( req, res ){
     var api_key = req.params;
