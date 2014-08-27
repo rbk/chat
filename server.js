@@ -28,12 +28,11 @@ var multer  = require('multer');
 app.use(bodyParser());
 app.use(multer({ dest: './uploads/'}));
 
-console.log('TODO: User notifications');
-console.log('TODO: Multiple rooms');
-console.log('TODO: Private messaging');
-console.log('TODO: Resposive');
-console.log('TODO: Basic auth');
-
+// console.log('TODO: User notifications');
+// console.log('TODO: Multiple rooms');
+// console.log('TODO: Private messaging');
+// console.log('TODO: Resposive');
+// console.log('TODO: Basic auth');
 
 // Session stuff
 var session    = require('express-session');
@@ -56,8 +55,6 @@ app.use(cookieParser('secret-string'));
 // Log HTTP requests
 var logger = require('morgan');
 app.use(logger(':remote-addr :method :url'));
-
-
 
 // MongoDB Connection
 mongoose.connect('mongodb://localhost/chat');
@@ -88,8 +85,9 @@ app.use(session({
 // GET Session ID
 app.get('/session',function(req, res, next) {
     var session = req.session;
+    var session_id = req.session.id
     res.setHeader('Content-Type', 'text/html');
-    res.send( req.session.id );
+    res.send( 'var session = "'+session_id+'"' );
     res.end();
 })
 
@@ -104,15 +102,30 @@ var User = mongoose.model( 'User', {
     hashed_password: String,
     socket_id: String,
     session_id: String,
-    message_count: Number
+    message_count: Number,
+    logged_in: { type: Boolean, default: false } 
 });
 var Session = mongoose.model( 'Session', {
     type: String,
     name: String,
     ip: String,
-    duration: Number
+    duration: Number,
+    logged_in: { type: Boolean, default: false } 
 });
-
+var UserSession = mongoose.model( 'UserSession', {
+    session_id: String,
+    logged_in: { type: Boolean, default: false } 
+});
+// My middleware for requiring authentication
+var requireAuthentication = function(req,res,next){
+    UserSession.find({session_id:req.session.id}, function(err,user){
+        if( user.length > 0 ){
+            return next();
+        } else {
+            res.redirect('/login');
+        }
+    });
+}
 
 // Static routes
 app.get('/',            function(req, res){ res.render('chat'); });
@@ -134,73 +147,95 @@ app.get('/chat/:id', function(req,res){
 // });
 
 
-app.get('/user/new', function(req,res){
+app.get('/user/new', requireAuthentication, function(req,res){
     res.render('user_new', {message: ''});
 });
-app.post('/user/new', function(req,res){
+app.post('/user/new', requireAuthentication, function(req,res){
 
     var n = req.body.username;
     var p = req.body.password;
     var pc = req.body.password_confirmation;
-
     if( !n || !p || !pc ){
         res.render('user_new', { message: 'Please fill out all fields.' });
-    }
-
-    var user = User.find({username: n}, function(error,user){
-        if( user.length > 0 ){
-            res.render('user_new', { message: 'Username already exists!' });
-        } else {
-            if( p != pc ) {
-                res.render('user_new', { message: 'Passwords do not match.' });
+        res.end();
+    } else if( pc!=p ){
+        res.render('user_new', { message: 'Passwords don\'t match.' });
+        res.end();
+    } else {
+        var user = User.find({username: n}, function(error,user){
+            if( user.length > 0 ){
+                res.render('user_new', { message: 'Username already exists!' });
+                res.end();
+            } else {
+                var user = new User({ username: n, hashed_password: md5(p) });
+                user.save(function (err) {
+                    if( !err ){
+                        res.render('user_new', { message: 'New Users Created!' });
+                        res.end();
+                    } 
+                });
             }
-            var user = new User({ username: n, hashed_password: md5(p) });
-            user.save(function (err) {
-                if( !err ){
-                    res.render('user_new', { message: 'New Users Created!' });
-                } 
-            });
-        }
-    });
+        });
+    }
 });
 
 
 app.get( '/login', function(req,res){
     res.render( 'login', { message: '' } );
-    // res.end();
 });
 
 
-// app.get('/sessions', function(req,res){
-//     Session.find({}, function(err,sessions){
-//         res.json( sessions );
-//     });
-// });
+app.get('/sessions', function(req,res){
+    Session.find({}, function(err,sessions){
+        res.json( sessions );
+    });
+});
+
 app.post('/login', function(req,res){
+    
     var username = req.body.username.toLowerCase();
     var password = md5(req.body.password);
+    var session_id = req.session.id;
+
     User.find({ username: username, hashed_password: password },function(err,user){
+
         if( !err && user.length > 0 ){
-            res.redirect( '/admin');
+
+            // check for existing session
+            UserSession.find({session_id: session_id}, function(err,user){
+                if( user.length > 0 ){
+                    res.redirect('admin');
+                } else {
+                    var session = new UserSession({ session_id: session_id, logged_in: true });
+                    session.save(function(err){
+                        if( !err ){
+                            res.redirect('admin');
+                        }
+                    });
+                }
+            });
+
+        
         } else {
             res.render( 'login', { message: 'Invalid credentials'});
         }
     });
-    // Session.find({}, function(err,sessions){
-    //     res.json( sessions );
-    // });
-    // var logged_in = true;
-    // if( logged_in ){
-    //     res.redirect('/admin');
-    // }
     // next();
 });
-app.get('/admin', function(req,res){
-    var session = false;
-    if( !session ){
-        res.redirect('/login');
-    }
 
+app.get('/admin', requireAuthentication,function(req,res, next){
+    res.render('admin');
+    res.end();
+});
+
+app.get('/logout', function(req,res){
+    UserSession.remove({ session_id: req.session.id }, function(err){
+        if( !err ){
+            res.render( 'login', { message: 'You are logged out.'});
+        } else {
+            res.send('Something went wrong.');
+        }
+    });
 });
 
 // JSON.stringify( req.params )
@@ -211,13 +246,34 @@ app.get('/private/api_key/:id?', function( req, res ){
 });
 
 
-// API
-app.get('/api/session/:id', function(req, res) {
-    // Need to send user object as a var to use in client side
-    User.find({ username: 'Richard' }, function(err, user){
-        res.send( user );
-    });
-});
+// auth middleware
+var authenticate = function(req, res, next) {
+  // if(req.session.id) {
+  //   // call some method to validate the session)
+  //   validateSession(req, res, next);
+  // } 
+  // else {
+  //   // Not authenticated (up to you what to do)
+  //   res.redirect('login');
+  //   next();
+  // }
+
+}
+var validateSession = function( req,res,next ){
+    // UserSession.find({session_id:req.session.id}, function(err,user){
+    //     if( user.length > 0 ){
+    //         // return true;
+    //         // return true;
+    //         // next();
+    //         return true;
+    //         // res.redirect('')
+    //     } else {
+    //         res.redirect('/login');
+    //         res.end();
+    //         // return false;
+    //     }
+    // });
+}
 
 // 404 pages can be cool!
 app.use(function(req, res, next){
@@ -254,7 +310,7 @@ io.on('connection', function(socket){
             } else {
                 // Send message to all sockets including yours!
                 io.emit('chat message', { username: data.username, message: sanitized_message });
-        console.log('SAVE MESSAGE')
+                console.log('SAVE MESSAGE')
             }
         });
     });
