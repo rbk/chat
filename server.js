@@ -9,8 +9,7 @@ var express      = require('express');
 var app          = express();
 var http         = require('http').Server(app);
 var io           = require('socket.io')(http);
-// var port         = process.env.PORT || 3020;
-var port = 3020;
+var port         = process.env.PORT || 3001;
 
 // Database of choice
 var mongoose     = require('mongoose');
@@ -196,7 +195,6 @@ app.get('/admin', function(req,res){
     if( !session ){
         res.redirect('/login');
     }
-    res.send('Admin');
 
 });
 // JSON.stringify( req.params )
@@ -213,6 +211,9 @@ app.get('/api/session/:id', function(req, res) {
     User.find({ username: 'Richard' }, function(err, user){
         res.send( user );
     });
+});
+app.use(function(req, res, next){
+    res.render('404');
 });
 
 /*

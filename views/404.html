@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>404</title>
+</head>
+<body>
+	<style>
+		h1 {
+			font-family: arial, helvetica, sans-serif;
+			text-align: center;
+			margin-top: 10%;
+		}
+		p {
+			text-align: center;
+		}
+		img {
+			max-width:300px;
+			margin:0 auto;
+			display:block;
+		}
+	</style>
+
+
+	<h1>404 Page Not Found</h1>
+	<p>Here, have a random cat image.</p>
+	<img src="" alt="Random Cat Picture">
+	
+	<script>
+
+		var image = document.getElementsByTagName('img')[0];
+		var randomNum = Math.random()*10;
+		randomNum = randomNum.toFixed( 0 );
+		var string = 'http://placekitten.com/g/'+randomNum+'00/'+randomNum+'00';
+		image.setAttribute('src', string )
+
+	</script>
+
+</body>
+</html>
