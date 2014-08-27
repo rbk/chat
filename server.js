@@ -154,6 +154,7 @@ app.get( '/login', function(req,res){
     }
 });
 
+
 app.post('/sessions', function(req,res){
     var username = req.body.username.toLowerCase();
     var password = md5(req.body.password);
@@ -180,7 +181,24 @@ app.get('/sessions', function(req,res){
         res.json( sessions );
     });
 });
+app.post('/session/new', function(req,res){
+    // Session.find({}, function(err,sessions){
+    //     res.json( sessions );
+    // });
+    var logged_in = true;
+    if( logged_in ){
+        res.redirect('/admin');
+    }
+    // next();
+});
+app.get('/admin', function(req,res){
+    var session = false;
+    if( !session ){
+        res.redirect('/login');
+    }
+    res.send('Admin');
 
+});
 // JSON.stringify( req.params )
 app.get('/private/api_key/:id?', function( req, res ){
     var api_key = req.params;
