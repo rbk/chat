@@ -176,16 +176,14 @@ app.get( '/login', function(req,res){
 //         res.json( sessions );
 //     });
 // });
-app.post('/session/new', function(req,res){
-
+app.post('/login', function(req,res){
     var username = req.body.username.toLowerCase();
     var password = md5(req.body.password);
-
     User.find({ username: username, hashed_password: password },function(err,user){
         if( !err && user.length > 0 ){
-            res.redirect( '/');
+            res.redirect( '/admin');
         } else {
-            res.redirect( '/login');
+            res.render( 'login', { message: 'Invalid credentials'});
         }
     });
     // Session.find({}, function(err,sessions){
@@ -220,6 +218,8 @@ app.get('/api/session/:id', function(req, res) {
         res.send( user );
     });
 });
+
+// 404 pages can be cool!
 app.use(function(req, res, next){
     res.render('404');
 });
