@@ -310,6 +310,7 @@ io.on('connection', function(socket){
             } else {
                 // Send message to all sockets including yours!
                 io.emit('chat message', { username: data.username, message: sanitized_message });
+                socket.broadcast.emit('notify others', { username: data.username, message: sanitized_message });
                 console.log('SAVE MESSAGE')
             }
         });
