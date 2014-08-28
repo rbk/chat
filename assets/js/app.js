@@ -1,6 +1,7 @@
 $(function(){
 
 	var socket = io();
+	var pageVisibility = false;
 
 	var current_menu_item = localStorage.getItem( 'app-box-chat-menu' );
 	if( current_menu_item ){
@@ -27,6 +28,13 @@ $(function(){
 	}
 	$('#client_nickname').val(username);
 	socket.emit( 'set username', username);
+
+
+$(function() {
+    window.isActive = true;
+    $(window).focus(function() { this.isActive = true;  pageVisibility = true;});
+    $(window).blur(function() { this.isActive = false; pageVisibility = false; });
+});
 
 	// console.log(  )
 /*
@@ -70,7 +78,7 @@ $(function(){
 	});
 
 	socket.on('notify others', function(data){
-		if( Notification.permission === "granted" ){
+		if( Notification.permission === "granted" && pageVisibility == false){
 			var notification = new Notification(data.username + ': ' + data.message);
 		}
 	})
