@@ -29,11 +29,8 @@ var multer  = require('multer');
 app.use(bodyParser());
 app.use(multer({ dest: './uploads/'}));
 
-// console.log('TODO: User notifications');
 // console.log('TODO: Multiple rooms');
 // console.log('TODO: Private messaging');
-// console.log('TODO: Resposive');
-// console.log('TODO: Basic auth');
 
 // Session stuff
 var session    = require('express-session');
@@ -130,9 +127,8 @@ var requireAuthentication = function(req,res,next){
     });
 }
 
-require('./routes/authentication.js')(app);
-
-
+// require('./routes/authentication.js')(app);
+// require('./routes/basic_routes.js');
 
 
 
