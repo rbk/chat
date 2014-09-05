@@ -26,7 +26,6 @@ $(function(){
 		localStorage.setItem('app-box-username', temp_name);
 		username = temp_name;
 	}
-	$('#client_nickname').val(username);
 	socket.emit( 'set username', username);
 
 
@@ -62,7 +61,6 @@ $(function() {
 	// Send Message
 	$('#send-message').click(function(){
 		var message = $('#message').val();
-		var username = $('#client_nickname').val();
 		if( message.length > 0 ){
 			socket.emit('chat message', {username: username, message: message });
 			$('#message').val('');
