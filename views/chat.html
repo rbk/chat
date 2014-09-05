@@ -2,7 +2,6 @@
 
 <div id="app-box">
     <div id="header">   
-        <!-- <h1>Current Room</h1> -->
         <nav>
             <ul>
                 <li class="curren"><a href="#chat">Chat</a></li>
@@ -28,14 +27,14 @@
                 <input type="text" class="inline">
             </div>
             <br>
-     <!--        <div>
+            <div>
                 <label>Theme:</label>
-                <select name="" id="">
+                <select name="theme" id="theme">
                     <option value="">Dark</option>
                     <option value="">Light</option>
                 </select>
             </div>
-            <br> -->
+            <br>
             <div>
                 <label>Color:</label>
                 <input type="text" class="inline">
@@ -94,17 +93,5 @@
     <input type="hidden" id="client_nickname">
 </div>
 
-
-
-<div id="chat_main" style="display:none;">
-    <ul id="user-list"></ul>
-    <form>
-        <input type="text" id="message" autocomplete="off" placeholder="Type here..." />
-        <button id="send-message">Send</button>
-    </form>
-
-    <input type="hidden" id="client_nickname">
-    
-</div>
 
 <% include _footer.html %>
