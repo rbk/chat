@@ -29,9 +29,6 @@ var multer  = require('multer');
 app.use(bodyParser());
 app.use(multer({ dest: './uploads/'}));
 
-// console.log('TODO: Multiple rooms');
-// console.log('TODO: Private messaging');
-
 // Session stuff
 var session    = require('express-session');
 var MongoStore = require('connect-mongo')(session);
@@ -45,7 +42,6 @@ app.engine('.html', require('ejs').__express);
 app.engine('.js', require('ejs').__express);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
-
 
 // Cookie Parser
 app.use(cookieParser('secret-string'));
@@ -95,14 +91,7 @@ var Message = mongoose.model( 'Message', {
     message: String,
     date: { type: Date, default: Date.now }
 });
-var User = mongoose.model( 'User', {
-    username: String,
-    hashed_password: String,
-    socket_id: String,
-    session_id: String,
-    message_count: Number,
-    logged_in: { type: Boolean, default: false } 
-});
+
 var Session = mongoose.model( 'Session', {
     type: String,
     name: String,
@@ -110,10 +99,7 @@ var Session = mongoose.model( 'Session', {
     duration: Number,
     logged_in: { type: Boolean, default: false } 
 });
-var UserSession = mongoose.model( 'UserSession', {
-    session_id: String,
-    logged_in: { type: Boolean, default: false } 
-});
+
 
 
 // My middleware for requiring authentication
@@ -127,7 +113,7 @@ var requireAuthentication = function(req,res,next){
     });
 }
 
-// require('./routes/authentication.js')(app);
+require('./routes/authentication.js')(app);
 // require('./routes/basic_routes.js');
 
 
@@ -179,7 +165,7 @@ io.on('connection', function(socket){
     socket.emit('your socket id', socket.id);
 
     // Send all messages to client as object
-    Message.find({}).sort('date').limit(10).exec(function (err, messages) {
+    Message.find({}).sort('date').limit(1000000).exec(function (err, messages) {
         if (err) return console.error(err);
         socket.emit('connected', messages);
     });

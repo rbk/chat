@@ -1,8 +1,33 @@
+var mongoose     = require('mongoose');
+var md5          = require('MD5');
+
+var session    = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+
+mongoose.connect('mongodb://localhost/chat');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+    console.log('Connected to MongoDB!!!');
+});
+var UserSession = mongoose.model( 'UserSession', {
+    session_id: String,
+    logged_in: { type: Boolean, default: false } 
+});
+var User = mongoose.model( 'User', {
+    username: String,
+    hashed_password: String,
+    socket_id: String,
+    session_id: String,
+    message_count: Number,
+    logged_in: { type: Boolean, default: false } 
+});
+
 function setupAuth(app){
     app.get('/user/new', requireAuthentication, newUserForm );
     app.post('/user/new', requireAuthentication, createUser );
     app.get( '/login', function(req,res){res.render( 'login', { message: '' } );});
-    app.get('/sessions', getSessions);
+    // app.get('/sessions', getSessions);
     app.post('/login', logIn);
     app.post('/logout', logOut);
     app.get('/admin', requireAuthentication,function(req,res, next){ res.render('admin'); res.end();});
@@ -37,11 +62,11 @@ function createUser(req,res){
         });
     } 
 }
-function getSessions(req,res){
-    Session.find({}, function(err,sessions){
-        res.json( sessions );
-    });
-}
+// function getSessions(req,res){
+//     Session.find({}, function(err,sessions){
+//         res.json( sessions );
+//     });
+// }
 
 function logIn(req,res){
     var username = req.body.username.toLowerCase();
