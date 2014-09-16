@@ -108,6 +108,8 @@ $(function() {
 	});
 
 
+	
+
 	socket.on( 'remove user', function(id){
 		$('.'+id).remove();
 		$('#messages').append( 
@@ -144,7 +146,7 @@ $(function() {
 		socket.emit( 'set username', $(this).val() );
 	});
 
-	$('#notificationsToggle').on('click',function(e){
+	$('#notificationsToggle, .enable-n').on('click',function(e){
 		e.preventDefault();
 		notifyMe('You have just enabled notifications!');
 	})

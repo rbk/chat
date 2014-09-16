@@ -188,7 +188,7 @@ io.on('connection', function(socket){
     socket.emit('your socket id', socket.id);
 
     // Send all messages to client as object
-    Message.find({}).sort('date').limit(1000000).exec(function (err, messages) {
+    Message.find({}).sort('date').limit(10).exec(function (err, messages) {
         if (err) return console.error(err);
         socket.emit('connected', messages);
     });
