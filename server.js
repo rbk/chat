@@ -21,7 +21,12 @@ var router       = express.Router();
 var sanitizer    = require('sanitizer');
 var md5          = require('MD5');
 var fs           = require('fs');
+
+
+
+
 // npm install helmet // security
+
 
 // Form and upload processing
 var bodyParser = require('body-parser');
@@ -86,6 +91,18 @@ app.get('/session',function(req, res, next) {
 })
 
 // DEFINE Collections/Models
+var UserSession = mongoose.model( 'UserSession', {
+    session_id: String,
+    logged_in: { type: Boolean, default: false } 
+});
+var User = mongoose.model( 'User', {
+    username: String,
+    hashed_password: String,
+    socket_id: String,
+    session_id: String,
+    message_count: Number,
+    logged_in: { type: Boolean, default: false } 
+});
 var Message = mongoose.model( 'Message', {
     name: String,
     message: String,
@@ -113,8 +130,14 @@ var requireAuthentication = function(req,res,next){
     });
 }
 
-require('./routes/authentication.js')(app);
-// require('./routes/basic_routes.js');
+
+
+
+
+
+
+
+
 
 
 
@@ -165,7 +188,7 @@ io.on('connection', function(socket){
     socket.emit('your socket id', socket.id);
 
     // Send all messages to client as object
-    Message.find({}).sort('date').limit(1000000).exec(function (err, messages) {
+    Message.find({}).sort('date').limit(10).exec(function (err, messages) {
         if (err) return console.error(err);
         socket.emit('connected', messages);
     });

@@ -197,3 +197,19 @@ input#name {
 		}	
 	}
 }
+
+// Quickly adding this to make the thing work;
+input[name="your-name"] {
+	display: inline-block;
+	width: 100px;
+	margin-left: 35px;
+	margin-top: 14px;
+	color: #eee;
+}
+.enable-n {
+	color: #eee;
+	padding:3px;
+	&:hover {
+		background-color: #444;
+	}
+}

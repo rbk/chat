@@ -1,16 +1,11 @@
-function setupAuth(app){
-    app.get('/user/new', requireAuthentication, newUserForm );
-    app.post('/user/new', requireAuthentication, createUser );
-    app.get( '/login', function(req,res){res.render( 'login', { message: '' } );});
-    app.get('/sessions', getSessions);
-    app.post('/login', logIn);
-    app.post('/logout', logOut);
-    app.get('/admin', requireAuthentication,function(req,res, next){ res.render('admin'); res.end();});
-}
-function newUserForm(req,res){
+// auth start
+
+
+app.get('/user/new', requireAuthentication, function(req,res){
     res.render('user_new', {message: ''});
-}
-function createUser(req,res){
+});
+app.post('/user/new', requireAuthentication, function(req,res){
+
     var n = req.body.username;
     var p = req.body.password;
     var pc = req.body.password_confirmation;
@@ -35,15 +30,23 @@ function createUser(req,res){
                 });
             }
         });
-    } 
-}
-function getSessions(req,res){
+    }
+});
+
+
+app.get( '/login', function(req,res){
+    res.render( 'login', { message: '' } );
+});
+
+
+app.get('/sessions', function(req,res){
     Session.find({}, function(err,sessions){
         res.json( sessions );
     });
-}
+});
 
-function logIn(req,res){
+app.post('/login', function(req,res){
+    
     var username = req.body.username.toLowerCase();
     var password = md5(req.body.password);
     var session_id = req.session.id;
@@ -71,8 +74,14 @@ function logIn(req,res){
             res.render( 'login', { message: 'Invalid credentials'});
         }
     });
-}
-function logOut(req,res){
+});
+
+app.get('/admin', requireAuthentication,function(req,res, next){
+    res.render('admin');
+    res.end();
+});
+
+app.get('/logout', function(req,res){
     UserSession.remove({ session_id: req.session.id }, function(err){
         if( !err ){
             res.render( 'login', { message: 'You are logged out.'});
@@ -80,18 +89,8 @@ function logOut(req,res){
             res.send('Something went wrong.');
         }
     });
-}
-// My middleware for requiring authentication
-var requireAuthentication = function(req,res,next){
-    UserSession.find({session_id:req.session.id}, function(err,user){
-        if( user.length > 0 ){
-            return next();
-        } else {
-            res.redirect('/login');
-        }
-    });
-}
-
-module.exports = setupAuth;
+});
 
 
+
+// auth end

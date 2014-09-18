@@ -225,3 +225,16 @@ input#name {
     position: relative;
     top: -10px;
     background-color: #fff; }
+
+input[name="your-name"] {
+  display: inline-block;
+  width: 100px;
+  margin-left: 35px;
+  margin-top: 14px;
+  color: #eee; }
+
+.enable-n {
+  color: #eee;
+  padding: 3px; }
+  .enable-n:hover {
+    background-color: #444; }
