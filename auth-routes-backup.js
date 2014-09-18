@@ -1,6 +1,8 @@
+
 app.get('/user/new', requireAuthentication, function(req,res){
     res.render('user_new', {message: ''});
 });
+
 app.post('/user/new', requireAuthentication, function(req,res){
 
     var n = req.body.username;
